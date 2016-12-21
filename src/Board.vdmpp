@@ -1,12 +1,40 @@
 class Board
 types
--- TODO Define types here
+	public Cells = set of CellBoard;
 values
 	public static BoardSize: int = 10;
+	public static rangeCells: set of int = {1, ..., BoardSize};
+	
+	-- Shot types
+	public static Shot_Miss: char = 'M';
+	public static Shot_Hit: char = 'H';
+	public static Shot_DestroyedShip: char = 'D';
+	
+	
 instance variables
--- TODO Define instance variables here
+
+	public boardCells: Cells;
+	-- If battleShipBoard is 0, registers the shots of my enemy at my board (down board)
+	-- If battleShipBoard is 1, registers my shots on the board of my enemy (top board)
+	public battleShipBoard: int;
+	
 operations
--- TODO Define operations here
+	public Board: int ==> Board
+		Board(BoardType) ==
+		(
+			boardCells := {};
+			battleShipBoard := BoardType;
+			
+			for all cells_x in set rangeCells do (
+				for all cells_y in set rangeCells do (
+					boardCells := boardCells union {new CellBoard(cells_x, cells_y)};
+					)
+				);
+				
+				for all boardcells in set boardCells do
+					boardcells.setBoard(self);
+		)
+		
 functions
 -- TODO Define functiones here
 traces

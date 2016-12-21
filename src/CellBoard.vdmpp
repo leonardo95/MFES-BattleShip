@@ -8,8 +8,9 @@ values
 instance variables
 	public x_coord: int;
 	public y_coord: int;
-	public strikeShip: bool;
+	public striked: bool;
 	public withShip: bool;
+	public myBoard: Board;
 	
 	inv verifyCoordinates([x_coord] ^ [y_coord]);
 	
@@ -22,6 +23,13 @@ operations
 		)
 	pre verifyCoordinates([x] ^ [y]);
 	
+	public setBoard: Board ==> ()
+		setBoard(board) ==
+		(
+			myBoard := board;
+		)
+	pre is_Board(board);
+
 functions
 	public verifyCoordinates: coordinates -> bool
 		verifyCoordinates(coordinates) ==
