@@ -1,14 +1,33 @@
 class CellBoard
 types
--- TODO Define types here
+	public coordinates = seq of int;
+	
 values
 -- TODO Define values here
+
 instance variables
--- TODO Define instance variables here
+	public x_coord: int;
+	public y_coord: int;
+	public strikeShip: bool;
+	public withShip: bool;
+	
+	inv verifyCoordinates([x_coord] ^ [y_coord]);
+	
 operations
--- TODO Define operations here
+	public CellBoard: int * int ==> CellBoard
+		CellBoard(x, y) == 
+		(
+			x_coord := x;
+			y_coord := y;
+		)
+	pre verifyCoordinates([x] ^ [y]);
+	
 functions
--- TODO Define functiones here
+	public verifyCoordinates: coordinates -> bool
+		verifyCoordinates(coordinates) ==
+			hd coordinates >= 1 and  hd coordinates <= Board`BoardSize
+			and hd (tl coordinates) >= 1 and hd (tl coordinates) <= Board`BoardSize;
+			
 traces
 -- TODO Define Combinatorial Test Traces here
 end CellBoard
