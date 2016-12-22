@@ -1,14 +1,98 @@
 class Ship
 types
 -- TODO Define types here
+
 values
--- TODO Define values here
+	public static Ship_Dir_Right: char = 'r';
+	public static Ship_Dir_Down: char = 'd';
+	public static Ship_Dir_Left: char = 'l';
+	public static Ship_Dir_Up: char = 'u';
+	public static Directions: set of char = {Ship_Dir_Right, Ship_Dir_Down, Ship_Dir_Left, Ship_Dir_Up};
+	
+	static directions: map char to (seq of int) = { Ship_Dir_Right |-> [+1, 0], Ship_Dir_Down |-> [0, +1], Ship_Dir_Left |-> [-1, 0], Ship_Dir_Up |->[0, -1] }; 
+
 instance variables
--- TODO Define instance variables here
+	public static id: int := 0;
+	public id_temp: int :=  0;
+	public size_ship: int := 3;
+	public strikes: int := 0;
+	public initial_pos: CellBoard`coordinates;
+	public positions: set of CellBoard`coordinates := {};
+	public direction: char := 'l';
+	public board: Board;
+	
+	inv id >= 0;
+	inv len initial_pos = 2;
+	inv card(positions) >= 0 and card(positions) <= size_ship;
+	inv verifyDirections(direction);
+	
 operations
--- TODO Define operations here
+	public Ship: CellBoard`coordinates * char * int * Board ==> Ship
+	Ship(pos,dir,size,bd) == 
+	(
+		id_temp := id +1;
+		id := id_temp;
+		initial_pos := pos;
+		size_ship := size;
+		positions := {pos};
+		direction := dir;
+		board := bd;
+		
+		for i = 1 to size_ship-1 do ( 
+			positions := positions union {
+						[hd pos + (hd directions(dir))*i,
+				 		 hd (tl pos) +(hd (tl directions(dir)))*i]
+					  };
+		);
+		
+		updateShipCells();
+	)
+	pre	forall x in set {hd pos, hd pos + (hd directions(dir))*(size-1)},	y in set {hd (tl pos), hd (tl pos) +(hd (tl directions(dir)))*(size-1)} &
+			CellBoard`verifyCoordinates([x] ^ [y]);
+	
+	public updateShipCells: () ==> ()
+		updateShipCells() ==
+		(
+			for all c in set positions do
+			(
+				let h in set board.boardCells be st h.x_coord = hd c and 
+												 h.y_coord = hd (tl c) in
+				(
+					h.sethasShip();
+					h.setShip(self);
+				)
+			);
+		)
+	pre forall c in set positions &
+		let h in set board.boardCells be st h.x_coord = hd c and 
+										 h.y_coord = hd (tl c) in
+		(
+			not h.withShip
+		);
+		
+	public getShipStatus: () ==> bool
+		getShipStatus() ==
+		(
+			if(strikes = size_ship) then
+				return true;
+			return false;
+		);
+		
+	public incStrikes: () ==> ()
+		incStrikes() == strikes := strikes + 1
+		pre strikes < size_ship
+	post strikes <= size_ship;
+	
+	
+	public decStrikes: () ==> ()
+		decStrikes() == strikes := strikes - 1
+		pre strikes < size_ship
+	post strikes <= size_ship;
+		
 functions
--- TODO Define functiones here
+	public verifyDirections: char -> bool
+		verifyDirections(direction) ==
+			direction in set Directions;
 traces
 -- TODO Define Combinatorial Test Traces here
 end Ship

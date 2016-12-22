@@ -11,6 +11,7 @@ instance variables
 	public striked: bool;
 	public withShip: bool;
 	public myBoard: Board;
+	public ship: Ship;
 	
 	inv verifyCoordinates([x_coord] ^ [y_coord]);
 	
@@ -29,6 +30,23 @@ operations
 			myBoard := board;
 		)
 	pre is_Board(board);
+	
+	public setShip : Ship ==> ()
+		setShip(b) ==
+		(
+			ship := b;
+		)
+	pre is_Ship(b);
+		
+		
+	public sethit: () ==> ()
+		sethit() == striked := true;
+		
+	public sethasShip: () ==> ()
+		sethasShip() == withShip := true;
+		
+	public getShip: () ==> Ship
+		getShip() == return ship;
 
 functions
 	public verifyCoordinates: coordinates -> bool

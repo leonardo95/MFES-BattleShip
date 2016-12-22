@@ -18,6 +18,8 @@ instance variables
 	-- If battleShipBoard is 1, registers my shots on the board of my enemy (top board)
 	public battleShipBoard: int;
 	
+	inv card(boardCells) >= 1;
+	
 operations
 	public Board: int ==> Board
 		Board(BoardType) ==
@@ -34,7 +36,30 @@ operations
 				for all boardcells in set boardCells do
 					boardcells.setBoard(self);
 		)
+		post card(boardCells) = BoardSize * BoardSize;
 		
+		public strike: seq of int ==> char
+			strike(coordinates) ==
+			(
+				let cell in set boardCells be st(cell.x_coord = hd coordinates and cell.y_coord = hd(tl coordinates)) in (
+				
+				if not cell.withShip or cell.striked then 
+					return Shot_Miss;
+				
+				if cell.withShip and not cell.striked then (
+					cell.sethit();
+					cell.ship.incStrikes();
+				);
+				
+				if cell.ship.getShipStatus() then 
+					return Shot_DestroyedShip;
+					
+				return Shot_Hit;
+				);
+			)
+			pre CellBoard`verifyCoordinates(coordinates)
+			post RESULT in set {Shot_Miss, Shot_Hit, Shot_DestroyedShip};
+			
 functions
 -- TODO Define functiones here
 traces
