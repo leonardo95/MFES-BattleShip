@@ -1,6 +1,6 @@
-class CellBoard
+class CellBoard -- Represents a cell on the board's player
 types
-	public coordinates = seq of int;
+	public coordinates = seq of int; -- Each cell has coordinates (x, y)
 	
 values
 -- TODO Define values here
@@ -13,10 +13,11 @@ instance variables
 	public myBoard: Board;
 	public ship: Ship;
 	
-	inv verifyCoordinates([x_coord] ^ [y_coord]);
+	inv verifyCoordinates([x_coord] ^ [y_coord]); -- Restricts the range of te coordinates of a cell
 	
 operations
-	public CellBoard: int * int ==> CellBoard
+-- Builds a cell with a x and y
+	public CellBoard: int * int ==> CellBoard	
 		CellBoard(x, y) == 
 		(
 			x_coord := x;
@@ -24,6 +25,7 @@ operations
 		)
 	pre verifyCoordinates([x] ^ [y]);
 	
+-- Sets the board that the cell belongs
 	public setBoard: Board ==> ()
 		setBoard(board) ==
 		(
@@ -31,6 +33,7 @@ operations
 		)
 	pre is_Board(board);
 	
+-- Sets the ship that the cell belongs
 	public setShip : Ship ==> ()
 		setShip(b) ==
 		(
@@ -39,8 +42,8 @@ operations
 	pre is_Ship(b);
 		
 		
-	public sethit: () ==> ()
-		sethit() == striked := true;
+	public setstrike: () ==> ()
+		setstrike() == striked := true;
 		
 	public sethasShip: () ==> ()
 		sethasShip() == withShip := true;
@@ -49,6 +52,7 @@ operations
 		getShip() == return ship;
 
 functions
+-- Checks (in)invalid coordinates 
 	public verifyCoordinates: coordinates -> bool
 		verifyCoordinates(coordinates) ==
 			hd coordinates >= 1 and  hd coordinates <= Board`BoardSize

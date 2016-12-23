@@ -4,9 +4,105 @@ types
 values
 -- TODO Define values here
 instance variables
--- TODO Define instance variables here
+	public myName : seq of char;
+	public myType: int;
+	public myBoard: Board;
+	public hisBoard: Board;
+	public myMoves: seq of CellBoard`coordinates;
+	public myShips: seq of Ship;
+	
+	-- Each element represents the size of a ship.
+	-- We are going to have 10 ships and we are following the standard rules in terms of size of each ship
+	public static shipsSize : seq of int := [2,2,2,2,3,3,3,4,4,5];
+	
+	inv len shipsSize >= len myShips;
+	
 operations
--- TODO Define operations here
+-- Builds a ship according to his coordinates, direction, size and board
+	public Player: int * seq of char ==> Player
+		Player(type, name) == 
+		(	
+			dcl shipsInitpos: seq of CellBoard`coordinates, directions : seq of char;
+			
+			myName := name;
+			myType := type;
+			myBoard := new Board(0);
+			hisBoard := new Board(1);
+			
+			shipsInitpos := getMyShipsInitpos();
+			directions := getMyShipsDirections();
+			myMoves := getMyMoves();
+			
+			initMyShips(shipsInitpos, directions );
+		);
+		
+	public move: () ==> CellBoard`coordinates
+		move() ==
+		(
+			dcl mymove: CellBoard`coordinates;
+			
+			mymove := hd myMoves;
+			myMoves := tl myMoves;
+			
+			return mymove;
+		);
+		
+	public initMyShips: seq of CellBoard`coordinates * seq of char  ==> ()
+		initMyShips(shipsInitpos, directions) ==
+		(
+			dcl shipTemp: Ship, j : int, sizes: seq of int;
+			j := 1;
+			sizes := shipsSize;
+			myShips := [];
+	
+			while not j = len shipsSize do
+			(
+				shipTemp := new Ship(hd shipsInitpos, hd directions, hd sizes, myBoard);
+				myShips := myShips ^ [shipTemp];
+				j := j + 1;
+			);
+			
+		);
+		
+	public getMyShipsInitpos: () ==> seq of CellBoard`coordinates
+		getMyShipsInitpos() ==
+		(
+			if myType = 0 then
+			( 
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player1_shipsInitPositions.txt").#2;
+			)
+			else
+			( 
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player2_shipsInitPositions.txt").#2;
+			)
+		);
+		
+	public getMyShipsDirections: () ==> seq of char
+		getMyShipsDirections() ==
+		(
+			if myType = 0 then
+			( 
+				return IO`freadval[seq of char]("player1_shipsDirections.txt").#2;
+			)
+			else
+			( 
+				return IO`freadval[seq of char]("player2_shipsDirections.txt").#2;
+			)
+		);
+		
+	public getMyMoves: () ==> seq of CellBoard`coordinates
+		getMyMoves() ==
+		(
+			if myType = 0 then
+			( 
+				return IO`freadval[seq of CellBoard`coordinates]("player1_moves.txt").#2;
+			)
+			else
+			( 
+				return IO`freadval[seq of CellBoard`coordinates]("player2_moves.txt").#2;
+			)
+		);
+		
 functions
 -- TODO Define functiones here
 traces

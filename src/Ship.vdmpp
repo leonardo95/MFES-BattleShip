@@ -1,4 +1,4 @@
-class Ship
+class Ship -- Represents the ship class
 types
 -- TODO Define types here
 
@@ -9,49 +9,49 @@ values
 	public static Ship_Dir_Up: char = 'u';
 	public static Directions: set of char = {Ship_Dir_Right, Ship_Dir_Down, Ship_Dir_Left, Ship_Dir_Up};
 	
+	-- Map direction to a sequence of int (needed for setting ships on board)
 	static directions: map char to (seq of int) = { Ship_Dir_Right |-> [+1, 0], Ship_Dir_Down |-> [0, +1], Ship_Dir_Left |-> [-1, 0], Ship_Dir_Up |->[0, -1] }; 
 
 instance variables
 	public static id: int := 0;
-	public id_temp: int :=  0;
-	public size_ship: int := 3;
+	public sizeShip: int := 3;
 	public strikes: int := 0;
-	public initial_pos: CellBoard`coordinates;
+	public initialPos: CellBoard`coordinates;
 	public positions: set of CellBoard`coordinates := {};
 	public direction: char := 'l';
 	public board: Board;
 	
 	inv id >= 0;
-	inv len initial_pos = 2;
-	inv card(positions) >= 0 and card(positions) <= size_ship;
-	inv verifyDirections(direction);
+	inv card(positions) >= 0 and card(positions) <= sizeShip; -- Restricts the number of positions
+	inv verifyDirections(direction); -- Restricts the direction the the directions available
 	
 operations
+-- Builds a ship according to his coordinates, direction, size and board
 	public Ship: CellBoard`coordinates * char * int * Board ==> Ship
 	Ship(pos,dir,size,bd) == 
 	(
-		id_temp := id +1;
-		id := id_temp;
-		initial_pos := pos;
-		size_ship := size;
+		id := id + 1;
+		initialPos := pos;
+		sizeShip := size;
 		positions := {pos};
 		direction := dir;
 		board := bd;
 		
-		for i = 1 to size_ship-1 do ( 
+		for i = 1 to sizeShip-1 do ( 
 			positions := positions union {
 						[hd pos + (hd directions(dir))*i,
 				 		 hd (tl pos) +(hd (tl directions(dir)))*i]
 					  };
 		);
 		
-		updateShipCells();
+		initShipCells();
 	)
 	pre	forall x in set {hd pos, hd pos + (hd directions(dir))*(size-1)},	y in set {hd (tl pos), hd (tl pos) +(hd (tl directions(dir)))*(size-1)} &
 			CellBoard`verifyCoordinates([x] ^ [y]);
 	
-	public updateShipCells: () ==> ()
-		updateShipCells() ==
+-- Update cells that have a ship on it
+	public initShipCells: () ==> ()
+		initShipCells() ==
 		(
 			for all c in set positions do
 			(
@@ -69,27 +69,29 @@ operations
 		(
 			not h.withShip
 		);
-		
+
+-- Return ship status. If the number of strikes is equal to the size_ship then the ship e destroyed. Otherwise, return false
 	public getShipStatus: () ==> bool
 		getShipStatus() ==
 		(
-			if(strikes = size_ship) then
+			if(strikes = sizeShip) then
 				return true;
 			return false;
 		);
-		
+-- Updates the ship strikes with an increase
 	public incStrikes: () ==> ()
 		incStrikes() == strikes := strikes + 1
-		pre strikes < size_ship
-	post strikes <= size_ship;
-	
-	
+		pre strikes < sizeShip
+	post strikes <= sizeShip;
+		
+-- Updates the ship strikes with an decrease
 	public decStrikes: () ==> ()
 		decStrikes() == strikes := strikes - 1
-		pre strikes < size_ship
-	post strikes <= size_ship;
+		pre strikes < sizeShip
+	post strikes <= sizeShip;
 		
 functions
+-- Checks (in)valid directions
 	public verifyDirections: char -> bool
 		verifyDirections(direction) ==
 			direction in set Directions;

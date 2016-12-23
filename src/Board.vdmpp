@@ -1,26 +1,26 @@
-class Board
+class Board -- Represents the board's player
 types
-	public Cells = set of CellBoard;
+	public Cells = set of CellBoard; -- A board has a set of cells of type CellBoard
 values
-	public static BoardSize: int = 10;
-	public static rangeCells: set of int = {1, ..., BoardSize};
+	public static BoardSize: int = 10;	-- Board's size
+	public static rangeCells: set of int = {1, ..., BoardSize};	-- Range cells
 	
 	-- Shot types
-	public static Shot_Miss: char = 'M';
-	public static Shot_Hit: char = 'H';
-	public static Shot_DestroyedShip: char = 'D';
+	public static Shot_Miss: char = 'M';  -- Shot of type miss
+	public static Shot_Strike: char = 'H';	 -- Shot of type hit 
+	public static Shot_DestroyedShip: char = 'D';  -- Shot that destroyed the ship
 	
 	
 instance variables
-
-	public boardCells: Cells;
-	-- If battleShipBoard is 0, registers the shots of my enemy at my board (down board)
-	-- If battleShipBoard is 1, registers my shots on the board of my enemy (top board)
+	-- Cell's Board
+	public boardCells: Cells;	-- If battleShipBoard is 0, registers the shots of my enemy at my board (down board)
+															-- If battleShipBoard is 1, registers my shots on the board of my enemy (top board)
 	public battleShipBoard: int;
 	
-	inv card(boardCells) >= 1;
+	inv card(boardCells) >= 1; -- Restricts the number boardCells
 	
 operations
+-- Builds a Board depending on type (type is defined with battleShipBoard)
 	public Board: int ==> Board
 		Board(BoardType) ==
 		(
@@ -38,27 +38,28 @@ operations
 		)
 		post card(boardCells) = BoardSize * BoardSize;
 		
-		public strike: seq of int ==> char
-			strike(coordinates) ==
-			(
-				let cell in set boardCells be st(cell.x_coord = hd coordinates and cell.y_coord = hd(tl coordinates)) in (
+-- Responsible for update ship strikes
+	public strike: seq of int ==> char
+		strike(coordinates) ==
+		(
+			let cell in set boardCells be st(cell.x_coord = hd coordinates and cell.y_coord = hd(tl coordinates)) in (
 				
-				if not cell.withShip or cell.striked then 
-					return Shot_Miss;
+			if not cell.withShip or cell.striked then 
+				return Shot_Miss;
 				
-				if cell.withShip and not cell.striked then (
-					cell.sethit();
-					cell.ship.incStrikes();
-				);
+			if cell.withShip and not cell.striked then (
+				cell.setstrike();
+				cell.ship.incStrikes();
+			);
 				
-				if cell.ship.getShipStatus() then 
-					return Shot_DestroyedShip;
+			if cell.ship.getShipStatus() then 
+				return Shot_DestroyedShip;
 					
-				return Shot_Hit;
-				);
-			)
-			pre CellBoard`verifyCoordinates(coordinates)
-			post RESULT in set {Shot_Miss, Shot_Hit, Shot_DestroyedShip};
+			return Shot_Strike;
+			);
+		)
+		pre CellBoard`verifyCoordinates(coordinates)
+		post RESULT in set {Shot_Miss, Shot_Strike, Shot_DestroyedShip};
 			
 functions
 -- TODO Define functiones here
