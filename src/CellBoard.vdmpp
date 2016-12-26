@@ -3,13 +3,14 @@ types
 	public coordinates = seq of int; -- Each cell has coordinates (x, y)
 	
 values
--- TODO Define values here
+	public static FIRST : int = 1;
+	public static SECOND : int = 2;
 
 instance variables
 	public x_coord: int;
 	public y_coord: int;
-	public striked: bool;
-	public withShip: bool;
+	public striked: bool := false;
+	public withShip: bool := false;
 	public myBoard: Board;
 	public ship: Ship;
 	
@@ -55,8 +56,8 @@ functions
 -- Checks (in)invalid coordinates 
 	public verifyCoordinates: coordinates -> bool
 		verifyCoordinates(coordinates) ==
-			hd coordinates >= 1 and  hd coordinates <= Board`BoardSize
-			and hd (tl coordinates) >= 1 and hd (tl coordinates) <= Board`BoardSize;
+			coordinates(FIRST) >= 1 and  coordinates(FIRST) <= Board`BoardSize
+			and coordinates(SECOND) >= 1 and coordinates(SECOND) <= Board`BoardSize;
 			
 traces
 -- TODO Define Combinatorial Test Traces here

@@ -22,7 +22,7 @@ operations
 	public Player: int * seq of char ==> Player
 		Player(type, name) == 
 		(	
-			dcl shipsInitpos: seq of CellBoard`coordinates, directions : seq of char;
+			dcl shipsInitpos: seq of CellBoard`coordinates, directions : seq of int;
 			
 			myName := name;
 			myType := type;
@@ -30,10 +30,15 @@ operations
 			hisBoard := new Board(1);
 			
 			shipsInitpos := getMyShipsInitpos();
+			--IO`println(" AQUI 1");
 			directions := getMyShipsDirections();
+			--IO`println(" AQUI 2");
 			myMoves := getMyMoves();
+			--IO`println(" AQUI 3");
 			
-			initMyShips(shipsInitpos, directions );
+			initMyShips(shipsInitpos, directions);
+			--IO`println(myBoard.boardCells);
+			
 		);
 		
 -- Choose position according to the coordinates given by the _moves file
@@ -42,28 +47,32 @@ operations
 		(
 			dcl mymove: CellBoard`coordinates;
 			
-			mymove := hd myMoves;
+			mymove := myMoves(CellBoard`FIRST);
+			
+			if mymove = [] then
+			(
+				mymove := [0, 0];
+				return mymove;
+			);
+			
 			myMoves := tl myMoves;
 			
 			return mymove;
 		);
 		
 -- Initiates the ships with the positions given by _shipsInitPositions file
-	public initMyShips: seq of CellBoard`coordinates * seq of char  ==> ()
+	public initMyShips: seq of CellBoard`coordinates * seq of int  ==> ()
 		initMyShips(shipsInitpos, directions) ==
 		(
 			dcl shipTemp: Ship, j : int, sizes: seq of int;
-			j := 1;
+			j := 0;
 			sizes := shipsSize;
 			myShips := [];
 	
-			while not j = len shipsSize do
-			(
-				shipTemp := new Ship(hd shipsInitpos, hd directions, hd sizes, myBoard);
+			for i = 1 to len shipsSize do (
+				shipTemp := new Ship(shipsInitpos(i), directions(i), sizes(i), myBoard);
 				myShips := myShips ^ [shipTemp];
-				j := j + 1;
 			);
-			
 		);
 	
 -- Reads the initial position of the ships from file
@@ -82,16 +91,16 @@ operations
 
 
 -- Reads the ships's directions from file
-	public getMyShipsDirections: () ==> seq of char
+	public getMyShipsDirections: () ==> seq of int
 		getMyShipsDirections() ==
 		(
 			if myType = 0 then
 			( 
-				return IO`freadval[seq of char]("player1_shipsDirections.txt").#2;
+				return IO`freadval[seq of int]("resources/player1_shipsDirections.txt").#2;
 			)
 			else
 			( 
-				return IO`freadval[seq of char]("player2_shipsDirections.txt").#2;
+				return IO`freadval[seq of int]("resources/player2_shipsDirections.txt").#2;
 			)
 		);
 		
@@ -101,11 +110,11 @@ operations
 		(
 			if myType = 0 then
 			( 
-				return IO`freadval[seq of CellBoard`coordinates]("player1_moves.txt").#2;
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player1_moves.txt").#2;
 			)
 			else
 			( 
-				return IO`freadval[seq of CellBoard`coordinates]("player2_moves.txt").#2;
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player2_moves.txt").#2;
 			)
 		);
 		

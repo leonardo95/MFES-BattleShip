@@ -15,7 +15,7 @@ instance variables
 	public player2: Player;
 	public myBoard2: Board;
 	public hisBoard2: Board;
-	public endGame: bool;
+	public endGame: bool := false;
 	public currPlayer: int;
 	
 	inv currPlayer in set playersSet;
@@ -43,8 +43,16 @@ operations
 			(
 				let move = player1.move() in
 				(
+					if (move = [0, 0]) then
+					(
+						changePlayer();
+					)
+					else 
+				
 					hisBoard1.save(move, myBoard2.strike(move));
 					endGame := verifyEndGame(player2.myShips);
+					
+					--IO`println("111");
 					
 					if endGame then return currPlayer;
 					changePlayer();
@@ -54,8 +62,16 @@ operations
 			(
 				let move2 = player2.move() in 
 				(
+					if (move2 = [0, 0]) then
+					(
+						changePlayer();
+					)
+					else 
+				
 					hisBoard2.save(move2, myBoard1.strike(move2));
 					endGame := verifyEndGame(player1.myShips);
+					
+					--IO`println("222");
 					
 					if endGame then return currPlayer;
 					changePlayer();
@@ -72,9 +88,17 @@ operations
 			while not endGame do
 			(
 				winner := play();
+			--	IO`print("aqui");
 			);
+			
 			IO`print("The winner is: ");
 			IO`print(getPlayerName(winner));
+			--IO`print(hisBoard1.boardCells);
+			
+			for i = 1 to len player1.myShips do
+			(
+				IO`println(player1.myShips(i));
+			)
 		);
 		
 	public getPlayerName: int ==> seq of char
@@ -90,8 +114,10 @@ operations
 		changePlayer() == 
 		(
 			if currPlayer = PlayerNum1 then 
+			(
 				currPlayer := PlayerNum2;
-				
+			)
+			elseif currPlayer = PlayerNum2 then
 				currPlayer := PlayerNum1;
 		);
 		
