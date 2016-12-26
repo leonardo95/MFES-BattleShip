@@ -1,12 +1,106 @@
 class Game
 types
 -- TODO Define types here
+
 values
--- TODO Define values here
+	public static PlayerNum1: int = 2;
+	public static PlayerNum2: int = 3;
+	
+	public static playersSet: set of int = {PlayerNum1, PlayerNum2};
+	
 instance variables
--- TODO Define instance variables here
+	public player1: Player;
+	public myBoard1: Board;
+	public hisBoard1: Board;
+	public player2: Player;
+	public myBoard2: Board;
+	public hisBoard2: Board;
+	public endGame: bool;
+	public currPlayer: int;
+	
+	inv currPlayer in set playersSet;
+	
 operations
--- TODO Define operations here
+	public Game: seq of char * seq of char ==> Game
+		Game(player1_name, player2_name) ==
+		(
+			player1 := new Player(0, player1_name);
+			myBoard1 := player1.myBoard;
+			hisBoard1 := player1.hisBoard;
+			
+			player2 := new Player(1, player2_name);
+			myBoard2 := player2.myBoard;
+			hisBoard2 := player2.hisBoard;
+			
+			currPlayer := PlayerNum1;
+		
+		);
+		
+	public play: () ==> int
+		play() ==
+		(
+			if currPlayer = PlayerNum1 then 
+			(
+				let move = player1.move() in
+				(
+					hisBoard1.save(move, myBoard2.strike(move));
+					endGame := verifyEndGame(player2.myShips);
+					
+					if endGame then return currPlayer;
+					changePlayer();
+				)
+			)
+			elseif currPlayer = PlayerNum2 then
+			(
+				let move2 = player2.move() in 
+				(
+					hisBoard2.save(move2, myBoard1.strike(move2));
+					endGame := verifyEndGame(player1.myShips);
+					
+					if endGame then return currPlayer;
+					changePlayer();
+					)
+			);
+			return 1;
+		);
+		
+	public startGame: () ==> ()
+		startGame() == 
+		(
+			dcl winner: int := 1;
+			
+			while not endGame do
+			(
+				winner := play();
+			);
+			IO`print("The winner is: ");
+			IO`print(getPlayerName(winner));
+		);
+		
+	public getPlayerName: int ==> seq of char
+		getPlayerName(player_num) ==
+		(
+			if player_num = 2 then
+				return player1.myName;
+				
+			return player2.myName;
+		); 
+		
+	public changePlayer: () ==> ()
+		changePlayer() == 
+		(
+			if currPlayer = PlayerNum1 then 
+				currPlayer := PlayerNum2;
+				
+				currPlayer := PlayerNum1;
+		);
+		
+	public verifyEndGame: seq of Ship ==> bool
+		verifyEndGame(ships) ==
+		(
+			return forall ship in set elems ships & ship.getShipStatus();
+		);
+		
 functions
 -- TODO Define functiones here
 traces

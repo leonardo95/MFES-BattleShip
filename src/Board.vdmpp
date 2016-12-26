@@ -60,6 +60,19 @@ operations
 		)
 		pre CellBoard`verifyCoordinates(coordinates)
 		post RESULT in set {Shot_Miss, Shot_Strike, Shot_DestroyedShip};
+		
+	public save: seq of int * char ==> ()
+		save(move, strike) ==
+		(
+			let cell in set boardCells be st cell.x_coord = hd move and cell.y_coord = hd (tl move) in 
+			(
+				if strike = Shot_Strike or strike = Shot_DestroyedShip then
+					cell.sethasShip();
+			
+				cell.setstrike();
+			)
+		)
+		pre CellBoard`verifyCoordinates(move);
 			
 functions
 -- TODO Define functiones here

@@ -36,6 +36,7 @@ operations
 			initMyShips(shipsInitpos, directions );
 		);
 		
+-- Choose position according to the coordinates given by the _moves file
 	public move: () ==> CellBoard`coordinates
 		move() ==
 		(
@@ -47,6 +48,7 @@ operations
 			return mymove;
 		);
 		
+-- Initiates the ships with the positions given by _shipsInitPositions file
 	public initMyShips: seq of CellBoard`coordinates * seq of char  ==> ()
 		initMyShips(shipsInitpos, directions) ==
 		(
@@ -63,7 +65,8 @@ operations
 			);
 			
 		);
-		
+	
+-- Reads the initial position of the ships from file
 	public getMyShipsInitpos: () ==> seq of CellBoard`coordinates
 		getMyShipsInitpos() ==
 		(
@@ -76,7 +79,9 @@ operations
 				return IO`freadval[seq of CellBoard`coordinates]("resources/player2_shipsInitPositions.txt").#2;
 			)
 		);
-		
+
+
+-- Reads the ships's directions from file
 	public getMyShipsDirections: () ==> seq of char
 		getMyShipsDirections() ==
 		(
@@ -90,6 +95,7 @@ operations
 			)
 		);
 		
+-- Reads the moves to be played from file
 	public getMyMoves: () ==> seq of CellBoard`coordinates
 		getMyMoves() ==
 		(

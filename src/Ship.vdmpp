@@ -7,7 +7,7 @@ values
 	public static Ship_Dir_Down: char = 'd';
 	public static Ship_Dir_Left: char = 'l';
 	public static Ship_Dir_Up: char = 'u';
-	public static Directions: set of char = {Ship_Dir_Right, Ship_Dir_Down, Ship_Dir_Left, Ship_Dir_Up};
+	public static Directions_Available: set of char = {Ship_Dir_Right, Ship_Dir_Down, Ship_Dir_Left, Ship_Dir_Up};
 	
 	-- Map direction to a sequence of int (needed for setting ships on board)
 	static directions: map char to (seq of int) = { Ship_Dir_Right |-> [+1, 0], Ship_Dir_Down |-> [0, +1], Ship_Dir_Left |-> [-1, 0], Ship_Dir_Up |->[0, -1] }; 
@@ -94,7 +94,7 @@ functions
 -- Checks (in)valid directions
 	public verifyDirections: char -> bool
 		verifyDirections(direction) ==
-			direction in set Directions;
+			direction in set Directions_Available;
 traces
 -- TODO Define Combinatorial Test Traces here
 end Ship
