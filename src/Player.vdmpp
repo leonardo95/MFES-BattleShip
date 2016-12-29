@@ -10,6 +10,7 @@ instance variables
 	public hisBoard: Board;
 	public myMoves: seq of CellBoard`coordinates;
 	public myShips: seq of Ship;
+	public outOfMoves: bool := false;
 	
 	-- Each element represents the size of a ship.
 	-- We are going to have 10 ships and we are following the standard rules in terms of size of each ship
@@ -22,7 +23,7 @@ operations
 	public Player: int * seq of char ==> Player
 		Player(type, name) == 
 		(	
-			dcl shipsInitpos: seq of CellBoard`coordinates, directions : seq of int;
+			dcl shipsInitpos: seq of CellBoard`coordinates, directions : seq of char;
 			
 			myName := name;
 			myType := type;
@@ -39,6 +40,8 @@ operations
 			initMyShips(shipsInitpos, directions);
 			--IO`println(myBoard.boardCells);
 			
+		--	if type = 0 then IO`println(myShips);
+			
 		);
 		
 -- Choose position according to the coordinates given by the _moves file
@@ -47,21 +50,14 @@ operations
 		(
 			dcl mymove: CellBoard`coordinates;
 			
-			mymove := myMoves(CellBoard`FIRST);
-			
-			if mymove = [] then
-			(
-				mymove := [0, 0];
-				return mymove;
-			);
-			
+			mymove := hd myMoves;
 			myMoves := tl myMoves;
 			
 			return mymove;
 		);
 		
 -- Initiates the ships with the positions given by _shipsInitPositions file
-	public initMyShips: seq of CellBoard`coordinates * seq of int  ==> ()
+	public initMyShips: seq of CellBoard`coordinates * seq of char  ==> ()
 		initMyShips(shipsInitpos, directions) ==
 		(
 			dcl shipTemp: Ship, j : int, sizes: seq of int;
@@ -91,16 +87,16 @@ operations
 
 
 -- Reads the ships's directions from file
-	public getMyShipsDirections: () ==> seq of int
+	public getMyShipsDirections: () ==> seq of char
 		getMyShipsDirections() ==
 		(
 			if myType = 0 then
 			( 
-				return IO`freadval[seq of int]("resources/player1_shipsDirections.txt").#2;
+				return IO`freadval[seq of char]("resources/player1_shipsDirections.txt").#2;
 			)
 			else
 			( 
-				return IO`freadval[seq of int]("resources/player2_shipsDirections.txt").#2;
+				return IO`freadval[seq of char]("resources/player2_shipsDirections.txt").#2;
 			)
 		);
 		

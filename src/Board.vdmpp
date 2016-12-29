@@ -42,7 +42,7 @@ operations
 	public strike: seq of int ==> char
 		strike(coordinates) ==
 		(
-			let cell in set boardCells be st(cell.x_coord = coordinates(CellBoard`FIRST) and cell.y_coord = coordinates(CellBoard`SECOND)) in (
+			let cell in set boardCells be st(cell.x_coord = hd coordinates) and (cell.y_coord = hd (tl coordinates)) in (
 				
 			if not cell.withShip or cell.striked then 
 				return Shot_Miss;
@@ -50,12 +50,24 @@ operations
 			if cell.withShip and not cell.striked then (
 				cell.setstrike();
 				cell.ship.incStrikes();
-				IO`println(cell.getShip().strikes);
+				IO`print("Ship id: ");
+				IO`print(cell.ship.tempId);
+				IO`println(" was hit!");
 			);
 				
 			if cell.ship.getShipStatus() then 
+			(
+			
+				IO`print("Ship id: ");
+				IO`print(cell.ship.tempId);
+				IO`println(" was destroyed!");
+				IO`println("");
+				
 				return Shot_DestroyedShip;
+			);
 					
+					
+			IO`println("");
 			return Shot_Strike;
 			);
 		)
@@ -65,7 +77,7 @@ operations
 	public save: seq of int * char ==> ()
 		save(move, strike) ==
 		(
-			let cell in set boardCells be st cell.x_coord = move(CellBoard`FIRST) and cell.y_coord = move(CellBoard`SECOND) in 
+			let cell in set boardCells be st cell.x_coord = hd move and cell.y_coord = hd (tl move) in 
 			(
 				if strike = Shot_Strike or strike = Shot_DestroyedShip then
 					cell.sethasShip();

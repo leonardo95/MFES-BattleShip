@@ -3,32 +3,35 @@ types
 -- TODO Define types here
 
 values
-	public static Ship_Dir_Up: int = 0;
-	public static Ship_Dir_Right: int = 1;
-	public static Ship_Dir_Down: int = 2;
-	public static Ship_Dir_Left: int = 3;
-	public static Directions_Available: set of int = {Ship_Dir_Right, Ship_Dir_Down, Ship_Dir_Left, Ship_Dir_Up};
+	public static Ship_Dir_Up: char = 'u';
+	public static Ship_Dir_Right: char = 'r';
+	public static Ship_Dir_Down: char = 'd';
+	public static Ship_Dir_Left: char = 'l';
+	public static Directions_Available: set of char = {Ship_Dir_Right, Ship_Dir_Down, Ship_Dir_Left, Ship_Dir_Up};
 	
 	-- Map direction to a sequence of int (needed for setting ships on board)
-	static directions: map int to (seq of int) = { Ship_Dir_Right |-> [+1, 0], Ship_Dir_Down |-> [0, +1], Ship_Dir_Left |-> [-1, 0], Ship_Dir_Up |->[0, -1] }; 
+	static directions: map char to (seq of int) = { Ship_Dir_Right |-> [+1, 0], Ship_Dir_Down |-> [0, +1], Ship_Dir_Left |-> [-1, 0], Ship_Dir_Up |->[0, -1] }; 
 
 instance variables
 	public static id: int := 0;
+	public tempId: int;
 	public sizeShip: int := 3;
 	public strikes: int := 0;
 	public initialPos: CellBoard`coordinates;
 	public positions: set of CellBoard`coordinates := {};
-	public direction: int := 2;
+	public direction: char := 'd';
 	public board: Board;
 	
 	inv verifyDirections(direction); -- Restricts the direction the the directions available
 	
 operations
 -- Builds a ship according to his coordinates, direction, size and board
-	public Ship: CellBoard`coordinates * int * int * Board ==> Ship
+	public Ship: CellBoard`coordinates * char * int * Board ==> Ship
 	Ship(pos,dir,size,bd) == 
 	(
-		id := id + 1;
+		tempId := id +1;
+		id := tempId;
+		
 		initialPos := pos;
 		sizeShip := size;
 		positions := {pos};
@@ -37,11 +40,12 @@ operations
 		
 		--IO`print("Navio: ");
 		for i = 1 to sizeShip-1 do ( 
-			positions := positions union {[pos(CellBoard`FIRST) + directions(dir)(CellBoard`FIRST)*i, pos(CellBoard`SECOND) + directions(dir)(CellBoard`SECOND)*i]};
+			positions := positions union {[hd pos + hd directions(dir)*i, hd (tl pos) + hd (tl directions(dir))*i]};
 			
 		);
 		
-		IO`println(positions);
+		--IO`println(positions);
+		--IO`println(id);
 		initShipCells();
 	);
 	
@@ -51,8 +55,8 @@ operations
 		(
 			for all c in set positions do
 			(
-				let h in set board.boardCells be st h.x_coord = c(CellBoard`FIRST) and 
-												 h.y_coord = c(CellBoard`SECOND) in
+				let h in set board.boardCells be st h.x_coord = hd c and 
+												 h.y_coord = hd (tl c) in
 				(
 					h.sethasShip();
 					h.setShip(self);
@@ -67,7 +71,10 @@ operations
 		(
 			--IO`println(strikes);
 			if(strikes = sizeShip) then
+			(
 				return true;
+			)
+			else
 			return false;
 		);
 -- Updates the ship strikes with an increase
@@ -84,7 +91,7 @@ operations
 		
 functions
 -- Checks (in)valid directions
-	public verifyDirections: int -> bool
+	public verifyDirections: char -> bool
 		verifyDirections(direction) ==
 			direction in set Directions_Available;
 traces

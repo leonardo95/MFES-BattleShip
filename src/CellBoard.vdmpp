@@ -3,8 +3,6 @@ types
 	public coordinates = seq of int; -- Each cell has coordinates (x, y)
 	
 values
-	public static FIRST : int = 1;
-	public static SECOND : int = 2;
 
 instance variables
 	public x_coord: int;
@@ -42,7 +40,6 @@ operations
 		)
 	pre is_Ship(b);
 		
-		
 	public setstrike: () ==> ()
 		setstrike() == striked := true;
 		
@@ -56,8 +53,8 @@ functions
 -- Checks (in)invalid coordinates 
 	public verifyCoordinates: coordinates -> bool
 		verifyCoordinates(coordinates) ==
-			coordinates(FIRST) >= 1 and  coordinates(FIRST) <= Board`BoardSize
-			and coordinates(SECOND) >= 1 and coordinates(SECOND) <= Board`BoardSize;
+			hd coordinates >= 1 and  hd coordinates <= Board`BoardSize
+			and hd (tl coordinates) >= 1 and hd (tl coordinates) <= Board`BoardSize;
 			
 traces
 -- TODO Define Combinatorial Test Traces here

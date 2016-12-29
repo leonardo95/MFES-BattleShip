@@ -33,7 +33,6 @@ operations
 			hisBoard2 := player2.hisBoard;
 			
 			currPlayer := PlayerNum1;
-		
 		);
 		
 	public play: () ==> int
@@ -41,64 +40,85 @@ operations
 		(
 			if currPlayer = PlayerNum1 then 
 			(
-				let move = player1.move() in
+				if len player1.myMoves <> 0 then 
 				(
-					if (move = [0, 0]) then
-					(
-						changePlayer();
+					let move = player1.move() in
+					(	
+						IO`println("Player:" ^ player1.myName ^ " attacked Player: " ^ player2.myName);
+						hisBoard1.save(move, myBoard2.strike(move));
+						endGame := verifyEndGame(player2.myShips);
+	
+						if endGame then return currPlayer;
+							changePlayer();
 					)
-					else 
-				
-					hisBoard1.save(move, myBoard2.strike(move));
-					endGame := verifyEndGame(player2.myShips);
-					
-					--IO`println("111");
-					
-					if endGame then return currPlayer;
+				)
+				else
+				(
+					IO`println("Player:" ^ player1.myName ^ " is out of moves!!");
 					changePlayer();
 				)
 			)
 			elseif currPlayer = PlayerNum2 then
 			(
-				let move2 = player2.move() in 
+				if len player2.myMoves <> 0 then 
 				(
-					if (move2 = [0, 0]) then
+					let move2 = player2.move() in 
 					(
-						changePlayer();
+						IO`println("Player:" ^ player2.myName ^ " attacked Player: " ^ player1.myName);
+						hisBoard2.save(move2, myBoard1.strike(move2));
+						endGame := verifyEndGame(player1.myShips);
+					
+						if endGame then return currPlayer;
+							changePlayer();
 					)
-					else 
-				
-					hisBoard2.save(move2, myBoard1.strike(move2));
-					endGame := verifyEndGame(player1.myShips);
-					
-					--IO`println("222");
-					
-					if endGame then return currPlayer;
+				)
+				else
+				(
+					IO`println("Player:" ^ player2.myName ^ " is out of moves!!");
 					changePlayer();
-					)
+				)
 			);
+			
+			if len player1.myMoves = 0 and len player2.myMoves = 0 then
+			(
+				endGame := true;
+				return 4;
+			);
+				
 			return 1;
 		);
 		
 	public startGame: () ==> ()
 		startGame() == 
 		(
-			dcl winner: int := 1;
-			
-			while not endGame do
+			if len player1.myMoves > len player2.myMoves then
 			(
-				winner := play();
-			--	IO`print("aqui");
-			);
-			
-			IO`print("The winner is: ");
-			IO`print(getPlayerName(winner));
-			--IO`print(hisBoard1.boardCells);
-			
-			for i = 1 to len player1.myShips do
-			(
-				IO`println(player1.myShips(i));
+				IO`println("Player " ^ player1.myName ^ " has more moves than player " ^ player2.myName);
+				IO`println("Both players must have the same number of move");
 			)
+			elseif len player1.myMoves < len player2.myMoves then
+			(
+				IO`println("Player " ^ player2.myName ^ " has more moves than player " ^ player1.myName);
+				IO`println("Both players must have the same number of move");
+			)
+			else 
+			(
+				dcl winner: int := 1;
+			
+				while not endGame do
+				(
+					winner := play();
+				--	IO`print("aqui");
+				);
+				
+				if winner = 4 then
+					IO`println("No one won the game. Both players ran out of moves!")
+				else
+				(
+					IO`print("The winner is: ");
+					IO`println(getPlayerName(winner));
+				)
+			)			
 		);
 		
 	public getPlayerName: int ==> seq of char
