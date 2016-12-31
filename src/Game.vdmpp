@@ -103,20 +103,25 @@ operations
 			)
 			else 
 			(
-				dcl winner: int := 1;
+				dcl winner: int := 1, loser: int  := 30;
 			
 				while not endGame do
 				(
 					winner := play();
-				--	IO`print("aqui");
 				);
+				
+				if winner = 2 then 
+				(
+					loser := 3;
+				)
+				elseif winner = 3 then
+					loser:= 2;
 				
 				if winner = 4 then
 					IO`println("No one won the game. Both players ran out of moves!")
 				else
 				(
-					IO`print("The winner is: ");
-					IO`println(getPlayerName(winner));
+					ShowBoards(winner, loser);
 				)
 			)			
 		);
@@ -128,7 +133,16 @@ operations
 				return player1.myName;
 				
 			return player2.myName;
-		); 
+		);
+		
+	public getPlayer: int ==> Player
+		getPlayer(player_num) ==
+		(
+			if player_num = 2 then
+				return player1;
+				
+			return player2;
+		);  
 		
 	public changePlayer: () ==> ()
 		changePlayer() == 
@@ -139,6 +153,28 @@ operations
 			)
 			elseif currPlayer = PlayerNum2 then
 				currPlayer := PlayerNum1;
+		);
+		
+	public ShowBoards: int * int ==> ()
+		ShowBoards(winner, loser) ==
+		(
+						IO`print("The winner is: ");
+						IO`println(getPlayer(winner).myName);
+						IO`println("");
+						IO`println("Player " ^ getPlayer(winner).myName ^ " Board:");
+						Interfaces`printMyBoard(getPlayer(winner).myBoard, getPlayer(winner).myBoard.battleShipBoard);
+						IO`println("");
+						IO`println("Player " ^ getPlayer(winner).myName ^ " shot's on enemy's Board:");
+						Interfaces`printMyBoard(getPlayer(winner).hisBoard, getPlayer(winner).hisBoard.battleShipBoard);
+					
+						IO`println("");
+						IO`println("");
+						IO`println("Player " ^ getPlayer(loser).myName ^ " Board:");
+						Interfaces`printMyBoard(getPlayer(loser).myBoard, getPlayer(loser).myBoard.battleShipBoard);
+						IO`println("");
+						IO`println("Player " ^ getPlayer(loser).myName ^ " shot's on enemy's Board:");
+						Interfaces`printMyBoard(getPlayer(loser).hisBoard, getPlayer(loser).hisBoard.battleShipBoard);
+					
 		);
 		
 	public verifyEndGame: seq of Ship ==> bool

@@ -4,9 +4,88 @@ types
 values
 -- TODO Define values here
 instance variables
--- TODO Define instance variables here
+	public static ship: char := 'O';
+	public static strikeShip: char := 'X';
+	public static water: char := ' ';
+	public static strikeWater : char := '+';
+	
+public static boardColumns : map nat1 to char := {1|->'A', 2|->'B', 3|->'C', 4|->'D', 5|->'E', 	6|->'F', 7|->'G', 8|->'H', 9|->'I',10|->'J' };
 operations
--- TODO Define operations here
+	public static printMyBoard: Board * int==> ()
+		printMyBoard(board, type) == 
+		(
+			dcl temp_cell: char := ship;
+			
+			IO`print("                       ");
+			for i = 1 to Board`BoardSize do (
+					IO`print(boardColumns(i)); 
+					IO`print("   ");
+				);
+				
+			IO`println("");
+				
+			for y = 1 to Board`BoardSize do 
+			(
+			
+				if y <> 10 then	
+				(
+					IO`print("                    ");
+				)
+				else
+					IO`print("                   ");
+				
+				IO`print(y);
+		
+				for x = 1 to Board`BoardSize do 
+				(
+					let cell in set board.boardCells be st cell.x_coord = x and cell.y_coord = y in (
+						
+					if type = 0 then (
+						if cell.withShip then 
+						(
+							if cell.striked then
+								temp_cell := strikeShip
+							else
+								temp_cell := ship;
+						)
+						elseif cell.striked then temp_cell := strikeWater;
+
+							IO`print(temp_cell);
+							IO`print(" | ");
+							temp_cell := water;
+						)
+					else
+					(
+						if cell.withShip then (
+								if cell.striked then
+									temp_cell := strikeShip
+								else
+									temp_cell := ship;
+							)
+							else (
+								if cell.striked then (
+									temp_cell := strikeWater;
+								)
+								else (
+									temp_cell := water;
+								)
+							);
+
+							IO`print(temp_cell);
+							IO`print(" | ");
+					)
+				);
+			);
+						IO`println("");
+		);
+		
+			IO`print("                       ");
+			for i = 1 to Board`BoardSize do (
+					IO`print(boardColumns(i)); 
+					IO`print("   ");
+				);
+			IO`println(" ");
+	)
 functions
 -- TODO Define functiones here
 traces
