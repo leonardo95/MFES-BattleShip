@@ -1,16 +1,15 @@
-class CellBoard -- Represents a cell on the board's player
+class CellBoard -- Represents the CellBoard class. 
 types
 	public coordinates = seq of int; -- Each cell has coordinates (x, y)
-	
 values
-
+-- TODO Define values here
 instance variables
-	public x_coord: int;
-	public y_coord: int;
-	public striked: bool := false;
-	public withShip: bool := false;
-	public myBoard: Board;
-	public ship: Ship;
+	public x_coord: int;  -- CellBoard x coordinate
+	public y_coord: int;  -- CellBoard y coordinate
+	public striked: bool := false;  -- if striked or not
+	public withShip: bool := false;  -- if with ship or not
+	public myBoard: Board;  -- Board which the CellBoard belongs to
+	public ship: Ship;  -- Ship which the CellBoard belongs to
 	
 	inv verifyCoordinates([x_coord] ^ [y_coord]); -- Restricts the range of te coordinates of a cell
 	
@@ -39,16 +38,18 @@ operations
 			ship := b;
 		)
 	pre is_Ship(b);
-		
+	
+-- Sets the number of strikes		
 	public setstrike: () ==> ()
 		setstrike() == striked := true;
-		
+
+-- Sets the ship
 	public sethasShip: () ==> ()
 		sethasShip() == withShip := true;
 		
+-- Gets the ship
 	public getShip: () ==> Ship
 		getShip() == return ship;
-
 functions
 -- Checks (in)invalid coordinates 
 	public verifyCoordinates: coordinates -> bool

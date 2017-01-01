@@ -1,4 +1,4 @@
-class Board -- Represents the board's player
+class Board -- Represents the Board Class
 types
 	public Cells = set of CellBoard; -- A board has a set of cells of type CellBoard
 values
@@ -8,9 +8,7 @@ values
 	-- Shot types
 	public static Shot_Miss: char = 'M';  -- Shot of type miss
 	public static Shot_Strike: char = 'H';	 -- Shot of type hit 
-	public static Shot_DestroyedShip: char = 'D';  -- Shot that destroyed the ship
-	
-	
+	public static Shot_DestroyedShip: char = 'D';  -- Shot that destroyed the ship	
 instance variables
 	-- Cell's Board
 	public boardCells: Cells;	-- If battleShipBoard is 0, registers the shots of my enemy at my board (down board)
@@ -54,19 +52,15 @@ operations
 				IO`print(cell.ship.tempId);
 				IO`println(" was hit!");
 			);
-				
-			if cell.ship.getShipStatus() then 
+				if cell.ship.getShipStatus() then 
 			(
-			
 				IO`print("Ship id: ");
 				IO`print(cell.ship.tempId);
 				IO`println(" was destroyed!");
 				IO`println("");
 				
 				return Shot_DestroyedShip;
-			);
-					
-					
+			);				
 			IO`println("");
 			return Shot_Strike;
 			);

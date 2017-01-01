@@ -1,16 +1,18 @@
-class Interfaces
+class Interfaces -- Represents the Interface class. 
 types
 -- TODO Define types here
 values
 -- TODO Define values here
 instance variables
-	public static ship: char := 'O';
-	public static strikeShip: char := 'X';
-	public static water: char := ' ';
-	public static strikeWater : char := '+';
+	public static ship: char := 'O';  -- Cell with ship
+	public static strikeShip: char := 'X';  -- Cell with ship striked
+	public static water: char := ' ';  -- Cell with water
+	public static strikeWater : char := '+';    -- Cell with water striked
 	
+-- maps the board columns from numbers to letters
 public static boardColumns : map nat1 to char := {1|->'A', 2|->'B', 3|->'C', 4|->'D', 5|->'E', 	6|->'F', 7|->'G', 8|->'H', 9|->'I',10|->'J' };
 operations
+-- Builds the board and prints it
 	public static printMyBoard: Board * int==> ()
 		printMyBoard(board, type) == 
 		(
@@ -25,8 +27,7 @@ operations
 			IO`println("");
 				
 			for y = 1 to Board`BoardSize do 
-			(
-			
+			(	
 				if y <> 10 then	
 				(
 					IO`print("                    ");

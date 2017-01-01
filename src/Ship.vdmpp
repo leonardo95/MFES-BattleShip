@@ -1,51 +1,28 @@
-class Ship -- Represents the ship class
+class Ship -- Represents the Ship class
 types
 -- TODO Define types here
 
 values
-	public static Ship_Dir_Up: char = 'u';
-	public static Ship_Dir_Right: char = 'r';
-	public static Ship_Dir_Down: char = 'd';
-	public static Ship_Dir_Left: char = 'l';
-	public static Directions_Available: set of char = {Ship_Dir_Right, Ship_Dir_Down, Ship_Dir_Left, Ship_Dir_Up};
-	
-	-- Map direction to a sequence of int (needed for setting ships on board)
-	static directions: map char to (seq of int) = { Ship_Dir_Right |-> [+1, 0], Ship_Dir_Down |-> [0, +1], Ship_Dir_Left |-> [-1, 0], Ship_Dir_Up |->[0, -1] }; 
+-- TODO Define values here
 
 instance variables
-	public static id: int := 0;
-	public tempId: int;
-	public sizeShip: int := 3;
-	public strikes: int := 0;
-	public initialPos: CellBoard`coordinates;
-	public positions: set of CellBoard`coordinates := {};
-	public direction: char := 'd';
-	public board: Board;
-	
-	inv verifyDirections(direction); -- Restricts the direction the the directions available
+	public static id: int := 0;  -- Ship id
+	public tempId: int;  -- Ship temp id
+	public sizeShip: int := 3;  -- Ship size
+	public strikes: int := 0;  -- Ship strikes
+	public positions: seq of CellBoard`coordinates := []; -- Ship positions
+	public board: Board; -- Board which the ship belongs to
 	
 operations
 -- Builds a ship according to his coordinates, direction, size and board
-	public Ship: CellBoard`coordinates * char * int * Board ==> Ship
-	Ship(pos,dir,size,bd) == 
+	public Ship: seq of CellBoard`coordinates * int * Board ==> Ship
+	Ship(pos, size, bd) == 
 	(
 		tempId := id +1;
 		id := tempId;
-		
-		initialPos := pos;
 		sizeShip := size;
-		positions := {pos};
-		direction := dir;
+		positions := pos;
 		board := bd;
-		
-		--IO`print("Navio: ");
-		for i = 1 to sizeShip-1 do ( 
-			positions := positions union {[hd pos + hd directions(dir)*i, hd (tl pos) + hd (tl directions(dir))*i]};
-			
-		);
-		
-		--IO`println(positions);
-		--IO`println(id);
 		initShipCells();
 	);
 	
@@ -53,10 +30,10 @@ operations
 	public initShipCells: () ==> ()
 		initShipCells() ==
 		(
-			for all c in set positions do
+			for i = 1  to len positions do
 			(
-				let h in set board.boardCells be st h.x_coord = hd c and 
-												 h.y_coord = hd (tl c) in
+				let h in set board.boardCells be st h.x_coord = positions(i)(1) and 
+												 h.y_coord = positions(i)(2)  in
 				(
 					h.sethasShip();
 					h.setShip(self);
@@ -90,10 +67,7 @@ operations
 	post strikes <= sizeShip;
 		
 functions
--- Checks (in)valid directions
-	public verifyDirections: char -> bool
-		verifyDirections(direction) ==
-			direction in set Directions_Available;
+-- TODO Define functiones here
 traces
 -- TODO Define Combinatorial Test Traces here
 end Ship

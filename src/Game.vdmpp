@@ -1,26 +1,25 @@
-class Game
+class Game -- Represents the Game class
 types
 -- TODO Define types here
-
 values
 	public static PlayerNum1: int = 2;
-	public static PlayerNum2: int = 3;
-	
-	public static playersSet: set of int = {PlayerNum1, PlayerNum2};
+	public static PlayerNum2: int = 3;	
+	public static playersSet: set of int = {PlayerNum1, PlayerNum2};  -- Set with available players
 	
 instance variables
 	public player1: Player;
-	public myBoard1: Board;
-	public hisBoard1: Board;
+	public myBoard1: Board;  -- Player1's board of type 0
+	public hisBoard1: Board;  -- Player1's board of type 1
 	public player2: Player;
-	public myBoard2: Board;
-	public hisBoard2: Board;
-	public endGame: bool := false;
-	public currPlayer: int;
+	public myBoard2: Board;  -- Player2's board of type 0
+	public hisBoard2: Board;  -- Player2's board of type 1
+	public endGame: bool := false;  -- if the game has ended or not
+	public currPlayer: int; -- The player with the current play
 	
 	inv currPlayer in set playersSet;
 	
 operations
+-- Class responsible for all the game logic
 	public Game: seq of char * seq of char ==> Game
 		Game(player1_name, player2_name) ==
 		(
@@ -33,8 +32,10 @@ operations
 			hisBoard2 := player2.hisBoard;
 			
 			currPlayer := PlayerNum1;
-		);
-		
+		)
+		post currPlayer in set playersSet;
+
+-- Play the game by selecting the board spot's to attack. Also changes player and validates moves
 	public play: () ==> int
 		play() ==
 		(
@@ -88,6 +89,7 @@ operations
 			return 1;
 		);
 		
+-- Main class. Initiates the game, check for game over and show the winner and resuls
 	public startGame: () ==> ()
 		startGame() == 
 		(
@@ -126,6 +128,7 @@ operations
 			)			
 		);
 		
+-- Get player name
 	public getPlayerName: int ==> seq of char
 		getPlayerName(player_num) ==
 		(
@@ -134,7 +137,8 @@ operations
 				
 			return player2.myName;
 		);
-		
+
+-- Get player		
 	public getPlayer: int ==> Player
 		getPlayer(player_num) ==
 		(
@@ -143,7 +147,8 @@ operations
 				
 			return player2;
 		);  
-		
+
+-- Changes player
 	public changePlayer: () ==> ()
 		changePlayer() == 
 		(
@@ -155,6 +160,7 @@ operations
 				currPlayer := PlayerNum1;
 		);
 		
+-- Show the game results
 	public ShowBoards: int * int ==> ()
 		ShowBoards(winner, loser) ==
 		(
@@ -176,13 +182,13 @@ operations
 						Interfaces`printMyBoard(getPlayer(loser).hisBoard, getPlayer(loser).hisBoard.battleShipBoard);
 					
 		);
-		
+
+-- Cheks for end game
 	public verifyEndGame: seq of Ship ==> bool
 		verifyEndGame(ships) ==
 		(
 			return forall ship in set elems ships & ship.getShipStatus();
 		);
-		
 functions
 -- TODO Define functiones here
 traces

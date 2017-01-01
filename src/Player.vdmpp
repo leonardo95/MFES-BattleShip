@@ -1,16 +1,15 @@
-class Player
+class Player -- Represents the Player class
 types
 -- TODO Define types here
 values
 -- TODO Define values here
 instance variables
-	public myName : seq of char;
-	public myType: int;
-	public myBoard: Board;
-	public hisBoard: Board;
-	public myMoves: seq of CellBoard`coordinates;
-	public myShips: seq of Ship;
-	public outOfMoves: bool := false;
+	public myName : seq of char;  -- Player's name
+	public myType: int;  -- Player's type
+	public myBoard: Board;  -- Player's board with my ships
+	public hisBoard: Board;  -- Enemy's board with attempted shots
+	public myMoves: seq of CellBoard`coordinates;  -- Player's moves
+	public myShips: seq of Ship;  -- Player's ships
 	
 	-- Each element represents the size of a ship.
 	-- We are going to have 10 ships and we are following the standard rules in terms of size of each ship
@@ -30,18 +29,9 @@ operations
 			myBoard := new Board(0);
 			hisBoard := new Board(1);
 			
-			shipsInitpos := getMyShipsInitpos();
-			--IO`println(" AQUI 1");
-			directions := getMyShipsDirections();
-			--IO`println(" AQUI 2");
+			shipsInitpos := getMyShipsPositions();
 			myMoves := getMyMoves();
-			--IO`println(" AQUI 3");
-			
-			initMyShips(shipsInitpos, directions);
-			--IO`println(myBoard.boardCells);
-			
-		--	if type = 0 then IO`println(myShips);
-			
+			initMyShips(shipsInitpos);		
 		);
 		
 -- Choose position according to the coordinates given by the _moves file
@@ -57,49 +47,39 @@ operations
 		);
 		
 -- Initiates the ships with the positions given by _shipsInitPositions file
-	public initMyShips: seq of CellBoard`coordinates * seq of char  ==> ()
-		initMyShips(shipsInitpos, directions) ==
+	public initMyShips: seq of CellBoard`coordinates  ==> ()
+		initMyShips(shipsInitpos) ==
 		(
-			dcl shipTemp: Ship, j : int, sizes: seq of int;
-			j := 0;
+			dcl shipTemp: Ship, sizes: seq of int, temp_pos : seq of CellBoard`coordinates, temp_shipsInitpos : seq of CellBoard`coordinates;
 			sizes := shipsSize;
 			myShips := [];
+			temp_shipsInitpos := shipsInitpos;
 	
 			for i = 1 to len shipsSize do (
-				shipTemp := new Ship(shipsInitpos(i), directions(i), sizes(i), myBoard);
+			temp_pos := [];
+				for j = 1 to shipsSize(i) do (
+					temp_pos := temp_pos ^ [(hd temp_shipsInitpos)];
+					temp_shipsInitpos := tl temp_shipsInitpos;
+				);
+				shipTemp := new Ship(temp_pos, shipsSize(i), myBoard);
 				myShips := myShips ^ [shipTemp];
 			);
 		);
 	
 -- Reads the initial position of the ships from file
-	public getMyShipsInitpos: () ==> seq of CellBoard`coordinates
-		getMyShipsInitpos() ==
+	public getMyShipsPositions: () ==> seq of CellBoard`coordinates
+		getMyShipsPositions() ==
 		(
 			if myType = 0 then
 			( 
-				return IO`freadval[seq of CellBoard`coordinates]("resources/player1_shipsInitPositions.txt").#2;
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player1_shipsPositions.txt").#2;
 			)
 			else
 			( 
-				return IO`freadval[seq of CellBoard`coordinates]("resources/player2_shipsInitPositions.txt").#2;
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player2_shipsPositions.txt").#2;
 			)
 		);
 
-
--- Reads the ships's directions from file
-	public getMyShipsDirections: () ==> seq of char
-		getMyShipsDirections() ==
-		(
-			if myType = 0 then
-			( 
-				return IO`freadval[seq of char]("resources/player1_shipsDirections.txt").#2;
-			)
-			else
-			( 
-				return IO`freadval[seq of char]("resources/player2_shipsDirections.txt").#2;
-			)
-		);
-		
 -- Reads the moves to be played from file
 	public getMyMoves: () ==> seq of CellBoard`coordinates
 		getMyMoves() ==
