@@ -6,6 +6,7 @@ values
 instance variables
 	public myName : seq of char;  -- Player's name
 	public myType: int;  -- Player's type
+	public myMode: int;  -- Player's mode
 	public myBoard: Board;  -- Player's board with my ships
 	public hisBoard: Board;  -- Enemy's board with attempted shots
 	public myMoves: seq of CellBoard`coordinates;  -- Player's moves
@@ -19,13 +20,14 @@ instance variables
 	
 operations
 -- Builds a ship according to his coordinates, direction, size and board
-	public Player: int * seq of char ==> Player
-		Player(type, name) == 
+	public Player: int * seq of char * int ==> Player
+		Player(type, name, player_mode) == 
 		(	
 			dcl shipsInitpos: seq of CellBoard`coordinates, directions : seq of char;
 			
 			myName := name;
 			myType := type;
+			myMode := player_mode;
 			myBoard := new Board(0);
 			hisBoard := new Board(1);
 			
@@ -84,15 +86,61 @@ operations
 	public getMyMoves: () ==> seq of CellBoard`coordinates
 		getMyMoves() ==
 		(
+		if myMode = 0 then (
 			if myType = 0 then
 			( 
-				return IO`freadval[seq of CellBoard`coordinates]("resources/player1_moves.txt").#2;
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player1_moves_winner.txt").#2;
 			)
 			else
 			( 
-				return IO`freadval[seq of CellBoard`coordinates]("resources/player2_moves.txt").#2;
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player2_moves_loser.txt").#2;
 			)
-		);
+		)
+		else if myMode = 1 then (
+			if myType = 0 then
+			( 
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player1_moves_loser.txt").#2;
+			)
+			else
+			( 
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player2_moves_winner.txt").#2;
+			)
+		)
+		else if myMode = 2 then
+		(
+		if myType = 0 then
+			( 
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player1_moves_outofmoves.txt").#2;
+			)
+			else
+			( 
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player2_moves_outofmoves.txt").#2;
+			)
+		)
+		else if myMode = 3 then
+		(
+		if myType = 0 then
+			( 
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player1_moves_lessmoves.txt").#2;
+			)
+			else
+			( 
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player2_moves_winner.txt").#2;
+			)
+		)
+		else 
+		(
+		if myType = 0 then
+			( 
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player1_moves_winner.txt").#2;
+			)
+			else
+			( 
+				return IO`freadval[seq of CellBoard`coordinates]("resources/player2_moves_lessmoves.txt").#2;
+			)
+		)
+)
+		
 		
 functions
 -- TODO Define functiones here

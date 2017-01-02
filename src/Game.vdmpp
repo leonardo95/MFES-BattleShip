@@ -20,14 +20,14 @@ instance variables
 	
 operations
 -- Class responsible for all the game logic
-	public Game: seq of char * seq of char ==> Game
-		Game(player1_name, player2_name) ==
+	public Game: seq of char * seq of char * int ==> Game
+		Game(player1_name, player2_name, player_mode) ==
 		(
-			player1 := new Player(0, player1_name);
+			player1 := new Player(0, player1_name, player_mode);
 			myBoard1 := player1.myBoard;
 			hisBoard1 := player1.hisBoard;
 			
-			player2 := new Player(1, player2_name);
+			player2 := new Player(1, player2_name, player_mode);
 			myBoard2 := player2.myBoard;
 			hisBoard2 := player2.hisBoard;
 			
@@ -100,11 +100,14 @@ operations
 			(
 				IO`println("Player " ^ player1.myName ^ " has more moves than player " ^ player2.myName);
 				IO`println("Both players must have the same number of move");
+				endGame := true;
+				
 			)
 			elseif len player1.myMoves < len player2.myMoves then
 			(
 				IO`println("Player " ^ player2.myName ^ " has more moves than player " ^ player1.myName);
 				IO`println("Both players must have the same number of move");
+				endGame := true;
 			)
 			else 
 			(
@@ -128,20 +131,9 @@ operations
 					ShowBoards(winner, loser);
 				)
 			);
-				IO`print("Winner id:");
 				return winner;			
 		);
 		
--- Get player name
-	public getPlayerName: int ==> seq of char
-		getPlayerName(player_num) ==
-		(
-			if player_num = 2 then
-				return player1.myName;
-				
-			return player2.myName;
-		);
-
 -- Get player		
 	public getPlayer: int ==> Player
 		getPlayer(player_num) ==

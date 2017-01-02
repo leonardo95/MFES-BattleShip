@@ -6,14 +6,54 @@ operations
 	pre expectedTrue;
 	
 	--++ Full Game testing
-	-- Testing if the game ended and winner
-	public static game: () ==> ()
-		game() == 
+	-- Testing if the game ended and the winner is Player1
+	public static Player1Winner: () ==> ()
+		Player1Winner() == 
 		(
-			dcl game: Game := new Game("manuel", "tiago"), winner : int := game.startGame();
+			dcl game: Game := new Game("manuel", "tiago", 0), winner : int := game.startGame();
 			
 			assertTrue(game.endGame);
 			assertTrue(winner = game.PlayerNum1);
+		);
+		
+	-- Testing if the game ended and the winner is Player2
+	public static Player2Winner: () ==> ()
+		Player2Winner() == 
+		(
+			dcl game: Game := new Game("manuel", "tiago", 1), winner : int := game.startGame();
+			
+			assertTrue(game.endGame);
+			assertTrue(winner = game.PlayerNum2);
+		);
+		
+	-- Testing if the game ended and no one won
+	public static NoOneWon: () ==> ()
+		NoOneWon() == 
+		(
+			dcl game: Game := new Game("manuel", "tiago", 2), winner : int := game.startGame();
+			
+			assertTrue(game.endGame);
+			assertTrue(winner = 4);
+		);
+		
+	-- Testing if the game did not start and no winner
+	public static LessMovesPlayer1: () ==> ()
+		LessMovesPlayer1() == 
+		(
+			dcl game: Game := new Game("manuel", "tiago", 3), winner : int := game.startGame();
+			
+			assertTrue(game.endGame);
+			assertTrue(winner = -1);
+		);
+		
+	-- Testing if the game ended and winner
+	public static LessMovesPlayer2: () ==> ()
+		LessMovesPlayer2() == 
+		(
+			dcl game: Game := new Game("manuel", "tiago", 4), winner : int := game.startGame();
+			
+			assertTrue(game.endGame);
+			assertTrue(winner = -1);
 		);
 	
 	--++ Unit Testing ++--	
@@ -29,7 +69,7 @@ operations
 	public static testNumberShips: () ==> ()
 		testNumberShips() ==
 		(
-			dcl game : Game := new Game("manuel", "tiago"),	
+			dcl game : Game := new Game("manuel", "tiago", 0),	
 			player1ships : seq of Ship := game.player1.myShips,
 			player2ships : seq of Ship := game.player2.myShips;
 			
@@ -40,13 +80,11 @@ operations
 		public static testCoordinates: () ==> ()
 			testCoordinates() ==
 			(
-				dcl game : Game := new Game("manuel", "tiago"),	
+				dcl game : Game := new Game("manuel", "tiago", 0),	
 				player1myBoard : Board := game.myBoard1,	
 				player1hisBoard : Board := game.hisBoard1,	
 				player2myBoard : Board := game.myBoard2,	
-				player2hisBoard : Board := game.hisBoard2,
-				player1ships : seq of Ship := game.player1.myShips,
-				player2ships : seq of Ship := game.player2.myShips;
+				player2hisBoard : Board := game.hisBoard2;
 					
 				assertTrue(forall cell in set player1myBoard.boardCells &	CellBoard`verifyCoordinates([cell.x_coord] ^ [cell.y_coord]));
 				assertTrue(forall cell in set player1hisBoard.boardCells &	CellBoard`verifyCoordinates([cell.x_coord] ^ [cell.y_coord]));
@@ -63,7 +101,11 @@ operations
 	public static runTests : () ==> ()
     runTests () == 
     (
-      game();
+    	Player1Winner();
+    	Player2Winner();
+    	NoOneWon();
+    	LessMovesPlayer1();
+    	LessMovesPlayer2();
       
       testBoardCells();
       testNumberShips();

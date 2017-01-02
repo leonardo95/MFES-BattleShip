@@ -59,13 +59,7 @@ operations
 		incStrikes() == strikes := strikes + 1
 		pre strikes < sizeShip
 	post strikes <= sizeShip;
-		
--- Updates the ship strikes with an decrease
-	public decStrikes: () ==> ()
-		decStrikes() == strikes := strikes - 1
-		pre strikes < sizeShip
-	post strikes <= sizeShip;
-		
+	
 functions
 -- TODO Define functiones here
 traces

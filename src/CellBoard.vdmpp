@@ -46,10 +46,6 @@ operations
 -- Sets the ship
 	public sethasShip: () ==> ()
 		sethasShip() == withShip := true;
-		
--- Gets the ship
-	public getShip: () ==> Ship
-		getShip() == return ship;
 functions
 -- Checks (in)invalid coordinates 
 	public verifyCoordinates: coordinates -> bool
