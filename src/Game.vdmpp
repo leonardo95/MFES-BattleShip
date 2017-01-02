@@ -90,9 +90,12 @@ operations
 		);
 		
 -- Main class. Initiates the game, check for game over and show the winner and resuls
-	public startGame: () ==> ()
+	public startGame: () ==> int
 		startGame() == 
 		(
+		
+			dcl winner: int := -1, loser: int  := 30;
+				
 			if len player1.myMoves > len player2.myMoves then
 			(
 				IO`println("Player " ^ player1.myName ^ " has more moves than player " ^ player2.myName);
@@ -105,7 +108,6 @@ operations
 			)
 			else 
 			(
-				dcl winner: int := 1, loser: int  := 30;
 			
 				while not endGame do
 				(
@@ -125,7 +127,9 @@ operations
 				(
 					ShowBoards(winner, loser);
 				)
-			)			
+			);
+				IO`print("Winner id:");
+				return winner;			
 		);
 		
 -- Get player name

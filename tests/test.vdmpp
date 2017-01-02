@@ -1,0 +1,77 @@
+class test
+operations
+
+	public static assertTrue : bool ==> ()
+	  assertTrue(expectedTrue) == return
+	pre expectedTrue;
+	
+	--++ Full Game testing
+	-- Testing if the game ended and winner
+	public static game: () ==> ()
+		game() == 
+		(
+			dcl game: Game := new Game("manuel", "tiago"), winner : int := game.startGame();
+			
+			assertTrue(game.endGame);
+			assertTrue(winner = game.PlayerNum1);
+		);
+	
+	--++ Unit Testing ++--	
+	-- Testing the number of cells on a Board is BoardSize * BoardSize
+	public static testBoardCells: () ==> ()
+		testBoardCells() ==
+		(
+			dcl board : Board :=  new Board(0);
+			assertTrue(Board`BoardSize * Board`BoardSize = card(board.boardCells));
+		);
+		
+	-- Testing the number of ships on the game
+	public static testNumberShips: () ==> ()
+		testNumberShips() ==
+		(
+			dcl game : Game := new Game("manuel", "tiago"),	
+			player1ships : seq of Ship := game.player1.myShips,
+			player2ships : seq of Ship := game.player2.myShips;
+			
+			assertTrue( (len player1ships) + (len player2ships) = 20);
+		);
+	
+	-- Testing if every coordinates involved on the game are between 1 and the Board size
+		public static testCoordinates: () ==> ()
+			testCoordinates() ==
+			(
+				dcl game : Game := new Game("manuel", "tiago"),	
+				player1myBoard : Board := game.myBoard1,	
+				player1hisBoard : Board := game.hisBoard1,	
+				player2myBoard : Board := game.myBoard2,	
+				player2hisBoard : Board := game.hisBoard2,
+				player1ships : seq of Ship := game.player1.myShips,
+				player2ships : seq of Ship := game.player2.myShips;
+					
+				assertTrue(forall cell in set player1myBoard.boardCells &	CellBoard`verifyCoordinates([cell.x_coord] ^ [cell.y_coord]));
+				assertTrue(forall cell in set player1hisBoard.boardCells &	CellBoard`verifyCoordinates([cell.x_coord] ^ [cell.y_coord]));
+				assertTrue(forall cell in set player2myBoard.boardCells &	CellBoard`verifyCoordinates([cell.x_coord] ^ [cell.y_coord]));
+				assertTrue(forall cell in set player2hisBoard.boardCells &	CellBoard`verifyCoordinates([cell.x_coord] ^ [cell.y_coord]));
+			
+				assertTrue(	forall ship in set elems (game.player1.myShips ^ game.player2.myShips) &
+						forall coord in set elems ship.positions &
+							CellBoard`verifyCoordinates([coord(1)] ^ [coord(2)])
+				);
+			);
+			
+	--++ Geral Test ++--	
+	public static runTests : () ==> ()
+    runTests () == 
+    (
+      game();
+      
+      testBoardCells();
+      testNumberShips();
+      testCoordinates();
+    );
+
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end test
