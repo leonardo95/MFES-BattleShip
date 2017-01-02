@@ -32,6 +32,8 @@ operations
 			hisBoard2 := player2.hisBoard;
 			
 			currPlayer := PlayerNum1;
+			
+			Interfaces`printGameInit();
 		)
 		post currPlayer in set playersSet;
 
