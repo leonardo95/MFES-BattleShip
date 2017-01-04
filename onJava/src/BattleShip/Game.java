@@ -270,7 +270,7 @@ public class Game {
 	  System.out.println("Let's see the result of the game:");
 	  System.out.println("");
 	 
-	 // Game game = new Game(player, player2, movesmode);
-	 // game.startGame();
+	  Game game = new Game(player, player2, movesmode);
+	  game.startGame();
   }
 }
